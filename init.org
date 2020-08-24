@@ -656,6 +656,35 @@
                    :key (lambda (alist) (cdr (assoc 'title alist)))
                    :test 'string-equal)))))
    #+END_SRC
+    
+   Given a list of strings separated by newlines, in example :
+ 
+   josh
+   sam
+   jed
+   C.J.
+   toby
+  
+   You select the text, and run =arrayify=. 
+
+   You can optionally provide a quote character and receive this output:
+   "josh", "jed", "sam", "C.J.", "toby"
+  
+   This is incredibly useful for taking lists of IDs, or email addresses, etc,
+   and transforming them for pasting into documents, emails or "in" clauses in SQL, etc.
+   It is unbelievably useful.
+
+   #+BEGIN_SRC emacs-lisp
+  (defun arrayify (start end quote)
+    "Turn strings on newlines into a QUOTEd, comma-separated one-liner."
+    (interactive "r\nMQuote: ")
+    (let ((insertion
+           (mapconcat
+            (lambda (x) (format "%s%s%s" quote x quote))
+            (split-string (buffer-substring start end)) ", ")))
+      (delete-region start end)
+      (insert insertion)))
+   #+END_SRC
 
 ** Advice
 
