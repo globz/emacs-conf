@@ -165,7 +165,7 @@
              geiser               ; GNU Emacs and Scheme talk to each other
              git-gutter-fringe    ; Fringe version of git-gutter.el
              golden-ratio         ; Automatic resizing windows to golden ratio
-             ;haskell-mode        ; A Haskell editing mode
+             haskell-mode        ; A Haskell editing mode
              ;helm                ; Incremental and narrowing framework
              ;helm-ag             ; the silver searcher with helm interface
              ;helm-company        ; Helm interface for company-mode
@@ -175,6 +175,7 @@
              jedi                 ; Python auto-completion for Emacs
              js2-mode             ; Improved JavaScript editing mode
              json-mode            ; Major mode for editing JSON files
+             lsp-mode             ; Language Server Protocol Support for Emacs
              magit                ; control Git from Emacs
              markdown-mode        ; Emacs Major mode for Markdown-formatted files
              material-theme       ; A Theme based on Google Material Design
@@ -322,10 +323,16 @@
    (put 'narrow-to-region 'disabled nil)
    #+END_SRC
 
-   Automaticly revert =doc-view=-buffers when the file changes on disk.
+   Automatically revert =doc-view=-buffers when the file changes on disk.
 
    #+BEGIN_SRC emacs-lisp
    (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+   #+END_SRC
+
+   Automatically revert-buffer =dired= when directory is updated.
+
+   #+BEGIN_SRC emacs-lisp
+   (add-hook 'dired-mode-hook 'auto-revert-mode)
    #+END_SRC
 ** Modes
 
@@ -797,7 +804,7 @@
    (add-hook 'comint-mode-hook (lambda () (local-set-key (kbd "C-l") 'clear-comint)))
    #+END_SRC
 ** Lisp
-
+   
    I use =Paredit= when editing lisp code, we enable this for all lisp-modes.
 
    #+BEGIN_SRC emacs-lisp
