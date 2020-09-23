@@ -7,6 +7,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
+#+LAST_MODIFIED: 2020-09-23
 
 * About
 
@@ -125,12 +126,12 @@
 
    Managing extensions for Emacs is simplified using =package= which is
    built in to Emacs 24 and newer. To load downloaded packages we need to
-   initialize =package=. =cl= is a library that contains many functions from
+   initialize =package=. =cl-lib= is a library that contains many functions from
    Common Lisp, and comes in handy quite often, so we want to make sure it's
    loaded, along with =package=, which is obviously needed.
 
    #+BEGIN_SRC emacs-lisp
-   (require 'cl)
+   (require 'cl-lib)
    (require 'package)
    (package-initialize)
    #+END_SRC
@@ -195,7 +196,7 @@
        (when (memq window-system '(mac ns))
          (push 'exec-path-from-shell packages)
          (push 'reveal-in-osx-finder packages))
-       (let ((packages (remove-if 'package-installed-p packages)))
+       (let ((packages (cl-remove-if 'package-installed-p packages)))
          (when packages
            ;; Install uninstalled packages
            (package-refresh-contents)
@@ -366,10 +367,6 @@
               show-paren-mode              ; Highlight matching parentheses
               which-key-mode))             ; Available keybindings in popup
      (funcall mode 1))
-
-   (when (version< emacs-version "24.4")
-     (eval-after-load 'auto-compile
-       '((auto-compile-on-save-mode 1))))  ; compile .el files on save
    #+END_SRC
 
 ** Visual
