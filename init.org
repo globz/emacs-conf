@@ -1,5 +1,3 @@
-
-
 #+TITLE: Emacs configuration file
 #+AUTHOR: Globz
 #+BABEL: :cache yes
@@ -7,13 +5,22 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2020-09-23
+#+LAST_MODIFIED: 2020-09-26
 
 * About
 
-  This is an Emacs configuration file written in [[http://orgmode.org][Org mode]]. It is an attempt
-  to keep my =~/.emacs.d= tidy, but still be able to keep it all in one
-  file. I aim to briefly explain all my configurations as I go along!
+  This is an Emacs configuration file written in [[http://orgmode.org][Org mode]]. 
+
+  This configuration file is heavily based on the original work of 
+  =Lars Tveito=. 
+
+  The original configuration is located @ https://github.com/larstvei/dot-emacs
+
+
+  This is my attempt to keep my =~/.emacs.d= tidy and easy to manage while also
+  giving me the maximum amount of powerful tools and functionalities without
+  slowing down this glorious Lisp Machine to a grinding halt. 
+
 
   Follow these simple steps in order to enable this configuration on your
   system :
@@ -176,7 +183,7 @@
              jedi                 ; Python auto-completion for Emacs
              js2-mode             ; Improved JavaScript editing mode
              json-mode            ; Major mode for editing JSON files
-             lsp-mode             ; Language Server Protocol Support for Emacs
+             lsp-mode             ; Language Server Protocol Support for Emacs   
              magit                ; control Git from Emacs
              markdown-mode        ; Emacs Major mode for Markdown-formatted files
              material-theme       ; A Theme based on Google Material Design
@@ -191,6 +198,7 @@
              projectile           ; Manage and navigate projects in Emacs easily
              slime                ; Superior Lisp Interaction Mode for Emacs
              try                  ; Try out Emacs packages
+             use-package          ; A use-package declaration for simplifying your .emacs
              which-key)))         ; Display available keybindings in popup
      (ignore-errors ;; This package is only relevant for Mac OS X.
        (when (memq window-system '(mac ns))
@@ -222,7 +230,8 @@
               ox-latex                 ; the latex-exporter (from org)
               ox-md                    ; Markdown exporter (from org)
               recentf                  ; recently opened files
-              tex-mode))               ; TeX, LaTeX, and SliTeX mode commands
+              tex-mode                 ; TeX, LaTeX, and SliTeX mode commands   
+              use-package))            ; A use-package declaration for simplifying your .emacs   
      (idle-require feature))
 
    (setq idle-require-idle-delay 5)
@@ -324,16 +333,10 @@
    (put 'narrow-to-region 'disabled nil)
    #+END_SRC
 
-   Automatically revert =doc-view=-buffers when the file changes on disk.
+   Automaticly revert =doc-view=-buffers when the file changes on disk.
 
    #+BEGIN_SRC emacs-lisp
    (add-hook 'doc-view-mode-hook 'auto-revert-mode)
-   #+END_SRC
-
-   Automatically revert-buffer =dired= when directory is updated.
-
-   #+BEGIN_SRC emacs-lisp
-   (add-hook 'dired-mode-hook 'auto-revert-mode)
    #+END_SRC
 ** Modes
 
@@ -383,10 +386,10 @@
    #+BEGIN_SRC emacs-lisp
    (defun cycle-themes ()
      "Returns a function that lets you cycle your themes."
-     (lexical-let ((themes '#1=(leuven monokai material . #1#)))
+     (let ((themes '#1=(leuven monokai material . #1#)))
        (lambda ()
          (interactive)
-         ;; Rotates the thme cycle and changes the current theme.
+         ;; Rotates the theme cycle and changes the current theme.
          (load-theme (car (setq themes (cdr themes))) t))))
    #+END_SRC
 
@@ -485,7 +488,7 @@
      "Changes the ispell dictionary to the first element in
    ISPELL-LANGUAGES, and returns an interactive function that cycles
    the languages in ISPELL-LANGUAGES when invoked."
-     (lexical-let ((ispell-languages '#1=("american" "norsk" . #1#)))
+     (let ((ispell-languages '#1=("american" "francais" . #1#)))
        (ispell-change-dictionary (car ispell-languages))
        (lambda ()
          (interactive)
@@ -493,7 +496,7 @@
          (ispell-change-dictionary
           (car (setq ispell-languages (cdr ispell-languages)))))))
    #+END_SRC
-
+   
    =flyspell= signals an error if there is no spell-checking tool is
    installed. We can advice =turn-on-flyspell= and =flyspell-prog-mode= to
    only try to enable =flyspell= if a spell-checking tool is available. Also
@@ -535,6 +538,12 @@
      '(progn
         (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\n,")
         (custom-set-variables `(org-emphasis-alist ',org-emphasis-alist))))
+   #+END_SRC
+
+   Set initial visibility to =overview= (folded state)
+
+   #+BEGIN_SRC emacs-lisp
+   (setq org-startup-folded t)
    #+END_SRC
 
 ** Interactive functions
@@ -704,13 +713,14 @@
        (before disable-before-load (theme &optional no-confirm no-enable) activate)
      (mapc 'disable-theme custom-enabled-themes))
    #+END_SRC
+
 ** global-scale-mode
 
    These functions provide something close to ~text-scale-mode~, but for every
    buffer, including the minibuffer and mode line.
 
    #+BEGIN_SRC emacs-lisp
-   (lexical-let* ((default (face-attribute 'default :height))
+   (let* ((default (face-attribute 'default :height))
                   (size default))
 
      (defun global-scale-default ()
@@ -746,7 +756,7 @@
    bound in the [[Key bindings]] section.
 
    #+BEGIN_SRC emacs-lisp
-   (lexical-let ((last-shell ""))
+   (let ((last-shell ""))
      (defun toggle-shell ()
        (interactive)
        (cond ((string-match-p "^\\*shell<[1-9][0-9]*>\\*$" (buffer-name))
@@ -801,7 +811,7 @@
    (add-hook 'comint-mode-hook (lambda () (local-set-key (kbd "C-l") 'clear-comint)))
    #+END_SRC
 ** Lisp
-   
+
    I use =Paredit= when editing lisp code, we enable this for all lisp-modes.
 
    #+BEGIN_SRC emacs-lisp
@@ -886,6 +896,7 @@
     (eval-after-load "geiser"
       '(setq geiser-active-implementations '(chez)))
     #+END_SRC
+
 *** Chicken
 
     Chicken provides a scheme which compiles to C and here
@@ -896,6 +907,7 @@
     #+BEGIN_SRC emacs-lisp
     (setq scheme-program-name "csi -:c")
     #+END_SRC
+
 ** LaTeX and org-mode LaTeX export
 
 
@@ -995,7 +1007,7 @@
        (search-backward " $/math$")))
    #+END_SRC
 
-   Most of my writing in this markup is in Norwegian, so the dictionary is
+   Most of my writing in this markup is in English, so the dictionary is
    set accordingly. The markup is also sensitive to line breaks, so
    =auto-fill-mode= is disabled. Of course we want to bind our lovely
    function to a key!
@@ -1005,10 +1017,25 @@
              (lambda ()
                (auto-fill-mode 0)
                (visual-line-mode 1)
-               (ispell-change-dictionary "norsk")
+               (ispell-change-dictionary "american")
                (local-set-key (kbd "C-c b") 'insert-markdown-inline-math-block)) t)
    #+END_SRC
    
+** Elixir
+
+   elixir language server for elixir-mode
+
+   #+BEGIN_SRC emacs-lisp
+   (use-package lsp-mode
+     :commands lsp
+     :ensure t
+     :diminish lsp-mode
+     :hook
+     (elixir-mode . lsp)
+     :init
+     (add-to-list 'exec-path "~/Downloads/elixir-ls"))
+   #+END_SRC
+
 * Key bindings
 
   Inspired by [[http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs][this StackOverflow post]] I keep a =custom-bindings-map= that
