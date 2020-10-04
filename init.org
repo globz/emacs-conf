@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2020-09-26
+#+LAST_MODIFIED: 2020-10-03
 
 * About
 
@@ -149,7 +149,7 @@
    #+BEGIN_SRC emacs-lisp
    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
    (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-
+   ; Pinned packages
    (add-to-list 'package-pinned-packages '(elixir-mode . "melpa-stable") t)
    #+END_SRC
 
@@ -159,47 +159,53 @@
    #+BEGIN_SRC emacs-lisp
    (let* ((package--builtins nil)
           (packages
-           '(auto-compile         ; automatically compile Emacs Lisp libraries
-             ;cider               ; Clojure Interactive Development Environment
-             ;clj-refactor        ; A collection of clojure refactoring functions
-             define-word          ; display the definition of word at point
-             diminish             ; Diminished modes from modeline
-             drag-stuff           ; Drag stuff around in Emacs
-             erlang               ; Erlang major mode
-             elixir-mode          ; Elixir major mode
-             expand-region        ; Increase selected region by semantic units
-             focus                ; Dim color of text in surrounding sections
-             idle-require         ; load elisp libraries while Emacs is idle
-             geiser               ; GNU Emacs and Scheme talk to each other
-             git-gutter-fringe    ; Fringe version of git-gutter.el
-             golden-ratio         ; Automatic resizing windows to golden ratio
-             haskell-mode        ; A Haskell editing mode
-             ;helm                ; Incremental and narrowing framework
-             ;helm-ag             ; the silver searcher with helm interface
-             ;helm-company        ; Helm interface for company-mode
-             ;helm-dash           ; Offline documentation using Dash docsets.
-             ;helm-projectile     ; Helm integration for Projectile
-             ;helm-swoop          ; Efficiently hopping squeezed lines
-             jedi                 ; Python auto-completion for Emacs
-             js2-mode             ; Improved JavaScript editing mode
-             json-mode            ; Major mode for editing JSON files
-             lsp-mode             ; Language Server Protocol Support for Emacs   
-             magit                ; control Git from Emacs
-             markdown-mode        ; Emacs Major mode for Markdown-formatted files
-             material-theme       ; A Theme based on Google Material Design
-             matlab-mode          ; MATLAB integration with Emacs
-             monokai-theme        ; Dark theme
-             multiple-cursors     ; Multiple cursors for Emacs
-             olivetti             ; Minor mode for a nice writing environment
-             org                  ; Outline-based notes management and organizer
-             org-ref              ; citations bibliographies in org-mode
-             paredit              ; minor mode for editing parentheses
-             pdf-tools            ; Emacs support library for PDF files
-             projectile           ; Manage and navigate projects in Emacs easily
-             slime                ; Superior Lisp Interaction Mode for Emacs
-             try                  ; Try out Emacs packages
-             use-package          ; A use-package declaration for simplifying your .emacs
-             which-key)))         ; Display available keybindings in popup
+           '(auto-compile           ; automatically compile Emacs Lisp libraries
+             ;cider                 ; Clojure Interactive Development Environment
+             ;clj-refactor          ; A collection of clojure refactoring functions
+             company                ; Modular in-buffer completion framework for Emacs
+             company-ctags          ; Fastest auto-completion using Company and Ctags
+             counsel-etags          ; Fast, energy-saving, and powerful code navigation solution.
+             define-word            ; display the definition of word at point
+             diminish               ; Diminished modes from modeline
+             drag-stuff             ; Drag stuff around in Emacs
+             erlang                 ; Erlang major mode
+             elixir-mode            ; Elixir major mode
+             expand-region          ; Increase selected region by semantic units
+             focus                  ; Dim color of text in surrounding sections
+             idle-require           ; load elisp libraries while Emacs is idle
+             geiser                 ; GNU Emacs and Scheme talk to each other
+             git-gutter-fringe      ; Fringe version of git-gutter.el
+             golden-ratio           ; Automatic resizing windows to golden ratio
+             haskell-mode           ; A Haskell editing mode
+             ;helm                  ; Incremental and narrowing framework
+             ;helm-ag               ; the silver searcher with helm interface
+             ;helm-company          ; Helm interface for company-mode
+             ;helm-dash             ; Offline documentation using Dash docsets.
+             ;helm-projectile       ; Helm integration for Projectile
+             ;helm-swoop            ; Efficiently hopping squeezed lines
+             jedi                   ; Python auto-completion for Emacs
+             js2-mode               ; Improved JavaScript editing mode
+             json-mode              ; Major mode for editing JSON files
+             lsp-mode               ; Language Server Protocol Support for Emacs   
+             magit                  ; control Git from Emacs
+             markdown-mode          ; Emacs Major mode for Markdown-formatted files
+             material-theme         ; A Theme based on Google Material Design
+             matlab-mode            ; MATLAB integration with Emacs
+             monokai-theme          ; Dark theme
+             multiple-cursors       ; Multiple cursors for Emacs
+             olivetti               ; Minor mode for a nice writing environment
+             org                    ; Outline-based notes management and organizer
+             org-ref                ; citations bibliographies in org-mode
+             paredit                ; minor mode for editing parentheses
+             pdf-tools              ; Emacs support library for PDF files
+             php-mode               ; PHP Mode is a major mode for editing PHP script
+             projectile             ; Manage and navigate projects in Emacs easily
+             slime                  ; Superior Lisp Interaction Mode for Emacs
+             try                    ; Try out Emacs packages
+             use-package            ; A use-package declaration for simplifying your .emacs
+             which-key              ; Display available keybindings in popup
+             yasnippet              ; YASnippet is a template system for Emacs .
+             yasnippet-snippets)))  ; YASnippet official snippet collections
      (ignore-errors ;; This package is only relevant for Mac OS X.
        (when (memq window-system '(mac ns))
          (push 'exec-path-from-shell packages)
@@ -209,13 +215,16 @@
            ;; Install uninstalled packages
            (package-refresh-contents)
            (mapc 'package-install packages)))))
+;; Needed to handle our use-package configuration
+(eval-when-compile
+  (require 'use-package))
    #+END_SRC
 ** Require
 
    Some features are not loaded by default to minimize initialization time,
    so they have to be required (or loaded, if you will). =require=-calls
-   tends to lead to the largest bottleneck's in a
-   configuration. =idle-require= delays the =require=-calls to a time where
+   tends to lead to the largest bottleneck's in a configuration. 
+   =idle-require= delays the =require=-calls to a time where
    Emacs is in idle. So this is great for stuff you eventually want to load,
    but is not a high priority.
 
@@ -230,8 +239,7 @@
               ox-latex                 ; the latex-exporter (from org)
               ox-md                    ; Markdown exporter (from org)
               recentf                  ; recently opened files
-              tex-mode                 ; TeX, LaTeX, and SliTeX mode commands   
-              use-package))            ; A use-package declaration for simplifying your .emacs   
+              tex-mode))               ; TeX, LaTeX, and SliTeX mode commands   
      (idle-require feature))
 
    (setq idle-require-idle-delay 5)
@@ -333,7 +341,7 @@
    (put 'narrow-to-region 'disabled nil)
    #+END_SRC
 
-   Automaticly revert =doc-view=-buffers when the file changes on disk.
+   Automatically revert =doc-view=-buffers when the file changes on disk.
 
    #+BEGIN_SRC emacs-lisp
    (add-hook 'doc-view-mode-hook 'auto-revert-mode)
@@ -362,7 +370,7 @@
               delete-selection-mode        ; Replace selected text
               dirtrack-mode                ; directory tracking in *shell*
               drag-stuff-global-mode       ; Drag stuff around
-              ;global-company-mode         ; Auto-completion everywhere
+              global-company-mode          ; Auto-completion everywhere
               global-git-gutter-mode       ; Show changes latest commit
               global-prettify-symbols-mode ; Greek letters should look greek
               projectile-global-mode       ; Manage and navigate projects
@@ -699,6 +707,31 @@
       (insert insertion)))
    #+END_SRC
 
+org-source-block template
+
+   #+BEGIN_SRC emacs-lisp
+
+   (defun org-insert-source-block (name language)
+     "Asks name, language of org-source-block.
+   Inserts org-mode source code snippet"
+     (interactive "sInserting new org source block -> block name? 
+sblock language?  ")
+     (insert 
+      (if (string= name "")
+          ""
+        (concat "#+NAME: " name) )
+      (format "
+   ,#+BEGIN_SRC %s
+
+   ,#+END_SRC" language
+   )
+      )
+     (forward-line -1)
+     (goto-char (line-end-position))
+     )
+
+   #+END_SRC
+
 ** Advice
 
    An advice can be given to a function to make it behave differently. 
@@ -747,6 +780,15 @@
    #+END_SRC
 
 * Mode specific
+** Company
+
+   Enable company-ctags
+
+   #+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'company
+  (company-ctags-auto-setup))
+   #+END_SRC
+
 ** Shell
 
    Inspired by [[https://github.com/torenord/.emacs.d][torenord]], I maintain quick access to shell buffers with bindings
@@ -1025,6 +1067,7 @@
 
    elixir language server for elixir-mode
 
+#+NAME: elixir-mode-lsp
    #+BEGIN_SRC emacs-lisp
    (use-package lsp-mode
      :commands lsp
@@ -1033,7 +1076,101 @@
      :hook
      (elixir-mode . lsp)
      :init
-     (add-to-list 'exec-path "~/Downloads/elixir-ls"))
+     (add-to-list 'exec-path "~/Downloads/elixir-ls")
+     :config
+  (setq
+   lsp-auto-guess-root t)
+  (setq lsp-file-watch-ignored 
+      '("[/\\\\]\\.git$"
+        "[/\\\\]\\.elixir_ls$"
+        "[/\\\\]_build$"
+        "[/\\\\]assets$"
+        "[/\\\\]cover$"
+        "[/\\\\]node_modules$"
+        "[/\\\\]submodules$"
+        )))
+   #+END_SRC
+
+#+NAME: elixir-ligatures
+#+BEGIN_SRC emacs-lisp
+(use-package elixir-mode
+  :ensure t
+  :init  
+  (add-hook 'elixir-mode-hook
+            (lambda ()
+              (push '(">=" . ?\u2265) prettify-symbols-alist)
+              (push '("<=" . ?\u2264) prettify-symbols-alist)
+              (push '("!=" . ?\u2260) prettify-symbols-alist)
+              (push '("==" . ?\u2A75) prettify-symbols-alist)
+              (push '("=~" . ?\u2245) prettify-symbols-alist)
+              (push '("<-" . ?\u2190) prettify-symbols-alist)
+              (push '("->" . ?\u2192) prettify-symbols-alist)
+              (push '("<-" . ?\u2190) prettify-symbols-alist)
+              (push '("|>" . ?\u25B7) prettify-symbols-alist))))
+#+END_SRC
+
+** LSP
+
+   lsp-mode performances tweaks
+
+   #+BEGIN_SRC emacs-lisp
+   (with-eval-after-load 'lsp-mode
+     ;; enable log only for debug
+     (setq lsp-log-io nil)
+
+     ;; no real time syntax check
+     (setq lsp-diagnostics-provider :none)
+
+     ;; handle yasnippet by myself
+     (setq lsp-enable-snippet nil)
+
+     ;; ;; use `company-ctags' only.
+     ;; (setq lsp-completion-enable nil)
+
+     ;; ;; turn off for better performance
+     ;; (setq lsp-enable-symbol-highlighting nil)
+
+     ;; not needd, could  use ffip instead
+     (setq lsp-enable-links nil)
+
+     ;; auto restart lsp
+     (setq lsp-restart 'auto-restart)
+
+     ;; I only load needed client packages
+     (setq lsp-client-packages '(lsp-elixir))
+
+     ;; don't ping LSP lanaguage server too frequently
+     (defvar lsp-on-touch-time 0)
+     (defadvice lsp-on-change (around lsp-on-change-hack activate)
+       ;; don't run `lsp-on-change' too frequently
+       (when (> (- (float-time (current-time))
+                   lsp-on-touch-time) 30) ;; 30 seconds
+         (setq lsp-on-touch-time (float-time (current-time)))
+         ad-do-it)))
+   #+END_SRC
+
+** YASnippet
+
+The configuration below does the following:
+
+It calls yas-minor-mode when =prog-mode-hook= is called.
+The yasnippet package gets loaded/required automatically when yas-minor-mode is
+called. So if you do not open a buffer with a prog-mode derived major mode, 
+then yas-minor-mode is not called, and so yasnippet is not loaded at all.
+Once yasnippet is loaded, yas-reload-all is called.
+
+   #+BEGIN_SRC emacs-lisp
+   (use-package yasnippet
+     :commands (yas-minor-mode) ; autoload `yasnippet' when `yas-minor-mode' is called
+                                ; using any means: via a hook or by user
+                                ; Feel free to add more commands to this
+                                ; list to suit your needs.
+     :init ; stuff to do before requiring the package
+     (progn
+       (add-hook 'prog-mode-hook #'yas-minor-mode))
+     :config ; stuff to do after requiring the package
+     (progn
+       (yas-reload-all)))
    #+END_SRC
 
 * Key bindings
@@ -1064,6 +1201,7 @@
   ;(define-key custom-bindings-map (kbd "C-c b")       'org-switchb)
   ;(define-key custom-bindings-map (kbd "C-c a")       'org-agenda)
   ;(define-key custom-bindings-map (kbd "C-c l")       'org-store-link)
+  (define-key custom-bindings-map (kbd "C-x p")       'projectile-dired)
   (define-key custom-bindings-map (kbd "C-c <up>")    'windmove-up)
   (define-key custom-bindings-map (kbd "C-c <down>")  'windmove-down)
   (define-key custom-bindings-map (kbd "C-c <left>")  'windmove-left)
@@ -1089,6 +1227,7 @@
   (define-key custom-bindings-map (kbd "C-c d")   'duplicate-thing)
   (define-key custom-bindings-map (kbd "<C-tab>") 'tidy)
   (define-key custom-bindings-map (kbd "M-§")     'toggle-shell)
+  (define-key custom-bindings-map (kbd "C-x sb") 'org-insert-source-block)
   (dolist (n (number-sequence 1 9))
     (global-set-key (kbd (concat "M-" (int-to-string n)))
                     (lambda () (interactive) (switch-shell n))))
@@ -1109,4 +1248,3 @@
     "A mode that activates custom-bindings."
     t nil custom-bindings-map)
   #+END_SRC
-  
