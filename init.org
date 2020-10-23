@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2020-10-07
+#+LAST_MODIFIED: 2020-10-23
 
 * About
 
@@ -171,6 +171,7 @@
              erlang                 ; Erlang major mode
              elixir-mode            ; Elixir major mode
              expand-region          ; Increase selected region by semantic units
+             ess                    ; Emacs Speaks Statistics (ESS)
              focus                  ; Dim color of text in surrounding sections
              idle-require           ; load elisp libraries while Emacs is idle
              geiser                 ; GNU Emacs and Scheme talk to each other
