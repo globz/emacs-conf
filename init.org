@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2020-10-23
+#+LAST_MODIFIED: 2020-11-26
 
 * About
 
@@ -150,7 +150,8 @@
    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
    (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
    ; Pinned packages
-   (add-to-list 'package-pinned-packages '(elixir-mode . "melpa-stable") t)
+   ; elixir-mode stable is not working properly with Elixir 1.7
+   ;(add-to-list 'package-pinned-packages '(elixir-mode . "melpa-stable") t)
    #+END_SRC
 
    The configuration assumes that the packages listed below are
@@ -206,7 +207,8 @@
              use-package            ; A use-package declaration for simplifying your .emacs
              which-key              ; Display available keybindings in popup
              yasnippet              ; YASnippet is a template system for Emacs .
-             yasnippet-snippets)))  ; YASnippet official snippet collections
+             yasnippet-snippets     ; YASnippet official snippet collections
+             elixir-yasnippets)))   ; Elixir YASnippet
      (ignore-errors ;; This package is only relevant for Mac OS X.
        (when (memq window-system '(mac ns))
          (push 'exec-path-from-shell packages)
@@ -1178,6 +1180,13 @@ Once yasnippet is loaded, yas-reload-all is called.
      :config ; stuff to do after requiring the package
      (progn
        (yas-reload-all)))
+   #+END_SRC
+
+** Javascript
+
+#+NAME: Javascript major mode
+   #+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
    #+END_SRC
 
 * Key bindings
