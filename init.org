@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2020-11-26
+#+LAST_MODIFIED: 2023-07-29
 
 * About
 
@@ -469,14 +469,15 @@
    Hunspell... install Hunspell to the exec-path below on your Windows machine
    more details can be found here related to the installation setup : 
    https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
-   
+   *I believe this is no longer needed with latest WSL, simply install ispell + missing dictionary on your WSL instance*
+
    #+BEGIN_SRC emacs-lisp
    ;; check OS type for Windows Only 
-   (cond
-    ((string-equal system-type "windows-nt") ; Microsoft Windows
-      (add-to-list 'exec-path "C:/Hunspell/bin/")
-        (setq ispell-program-name (locate-file "hunspell"
-              exec-path exec-suffixes 'file-executable-p))))
+   ;; (cond
+   ;;  ((string-equal system-type "windows-nt") ; Microsoft Windows
+   ;;    (add-to-list 'exec-path "C:/Hunspell/bin/")
+   ;;      (setq ispell-program-name (locate-file "hunspell"
+   ;;            exec-path exec-suffixes 'file-executable-p))))
    #+END_SRC
    
    Flyspell offers on-the-fly spell checking. We can enable flyspell for all
@@ -1089,7 +1090,7 @@ sblock language?  ")
      :config
   (setq
    lsp-auto-guess-root t)
-  (setq lsp-file-watch-ignored 
+  (setq lsp-file-watch-ignored-directories 
       '("[/\\\\]\\.git$"
         "[/\\\\]\\.elixir_ls$"
         "[/\\\\]_build$"
