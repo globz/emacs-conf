@@ -642,15 +642,11 @@
           org-hide-emphasis-markers t
           org-pretty-entities t
           org-src-fontify-natively t
+          org-use-sub-superscripts nil
+          org-startup-folded t
           org-edit-src-content-indentation 0))
 
   #+end_src
-
-   Set initial visibility to =overview= (folded state)
-
-   #+begin_src emacs-lisp
-   (setq org-startup-folded t)
-   #+end_src
 
 ** Org Modern
 
