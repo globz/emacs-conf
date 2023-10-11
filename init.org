@@ -910,10 +910,9 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
    (use-package eglot
      :ensure nil
      :config (add-to-list 'eglot-server-programs
-                          '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.16.0/language_server.sh")))
+                          '((elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.16.0/language_server.sh")
+                            (php-mode . ("intelephense" "--stdio")))))
 
-   ;; Add node bin to exec-path, I am using NVM
-   ;;add-to-list 'exec-path "~/.nvm/versions/node/v18.18.0/bin")
    #+end_src
    
 ** Bash
@@ -1017,7 +1016,8 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
    #+begin_src emacs-lisp
    (use-package
     php-mode
-    :mode "\\.php?\\'")
+    :mode "\\.php?\\'"
+    :hook (php-mode . eglot-ensure))
 
    #+end_src
    
