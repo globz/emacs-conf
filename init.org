@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2023-10-10
+#+LAST_MODIFIED: 2023-10-11
 
 * About
 
@@ -988,8 +988,28 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
     (add-to-list 'auto-mode-alist '("\\.eex?\\'" . web-mode)))
    
    #+end_src
+
+** Lisp
+
+  [[https://paredit.org/][Paredit]] is a must have when editing lisp code.
+
+
+  #+begin_src emacs-lisp
+
+  ;; minor mode for editing parentheses
+  (use-package paredit
+    :defer t
+    :bind (:map paredit-mode-map ("RET" . nil))
+    :hook ((slime-repl-mode
+            lisp-mode
+            emacs-lisp-mode
+            lisp-interaction-mode
+            scheme-mode) 
+           . paredit-mode))
+
+  #+end_src  
    
-** Emacs Lisp
+*** Emacs Lisp
 
    #+begin_src emacs-lisp
 
@@ -1010,6 +1030,41 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
 
    #+end_src   
 
+*** Common lisp
+
+    #+begin_quote
+    This configuration must be tested, one day I will find a good project in
+    Common Lisp and test it out!
+    #+end_quote
+
+    I use [[http://www.common-lisp.net/project/slime/][Slime]] along with =lisp-mode= to edit Common Lisp code. Slime provides
+    code evaluation and other great features, a must have for a Common Lisp
+    developer. You can install the Common Lisp slime counterpart using
+    [[http://www.quicklisp.org/beta/][Quicklisp]], creating a helper that can be loaded.
+
+    We can specify what Common Lisp program Slime should use (I use SBCL). More
+    sensible =loop= indentation is borrowed from [[https://github.com/simenheg][simenheg]].
+
+    #+begin_src emacs-lisp
+
+    ;; Superior Lisp Interaction Mode for Emacs
+    (use-package slime
+      :disabled
+      :defer t
+      :bind (:map slime-repl-mode-map ("C-l" . slime-repl-clear-buffer))
+      :hook (common-lisp-mode . activate-slime-helper)
+      :config
+      (when (file-exists-p "~/.quicklisp/slime-helper.el")
+        (load (expand-file-name "~/.quicklisp/slime-helper.el")))
+
+      (setq inferior-lisp-program "sbcl")
+
+      (setq lisp-loop-forms-indentation   6
+            lisp-simple-loop-indentation  2
+            lisp-loop-keyword-indentation 6))
+
+    #+end_src
+   
 ** PHP
 
    Yep still using PHP...where's my tree-sitter!?
