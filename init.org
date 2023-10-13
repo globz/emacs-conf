@@ -862,137 +862,136 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
 * Mode specific
 ** Tree-sitter
 
-   This is a game changer ;)
+  This is a game changer ;)
 
-   Whenever a new language grammar is added M-x elisp-eval-region-or-buffer the
-   following code block below:
-   
-   #+begin_src emacs-lisp :tangle no
+  Whenever a new language grammar is added M-x elisp-eval-region-or-buffer the
+  following code block below:
 
-   (setq treesit-language-source-alist
-    '((heex "https://github.com/phoenixframework/tree-sitter-heex")
-      (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
-      (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-      (bash "https://github.com/tree-sitter/tree-sitter-bash")
-      (css "https://github.com/tree-sitter/tree-sitter-css")
-      (html "https://github.com/tree-sitter/tree-sitter-html")
-      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-      (json "https://github.com/tree-sitter/tree-sitter-json")
-      (python "https://github.com/tree-sitter/tree-sitter-python")))
-   ;; Should use:
-   (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
-   ;; at least once per installation or while changing this list
-   
-   #+end_src
+  #+begin_src emacs-lisp :tangle no
 
-   #+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+   '((heex "https://github.com/phoenixframework/tree-sitter-heex")
+     (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (python "https://github.com/tree-sitter/tree-sitter-python")))
+  ;; Should use:
+  (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+  ;; at least once per installation or while changing this list
 
-   (use-package
-    emacs
-    :ensure nil
-    :custom
-     (major-mode-remap-alist
-     '((sh-mode . bash-ts-mode)
-       (js2-mode . js-ts-mode)
-       (json-mode . json-ts-mode)
-       (css-mode . css-ts-mode)
-       (python-mode . python-ts-mode)
-       (elixir-mode . elixir-ts-mode))))
+  #+end_src
 
-   #+end_src
+  #+begin_src emacs-lisp
+
+  (use-package
+   emacs
+   :ensure nil
+   :custom
+    (major-mode-remap-alist
+    '((sh-mode . bash-ts-mode)
+      (js2-mode . js-ts-mode)
+      (json-mode . json-ts-mode)
+      (css-mode . css-ts-mode)
+      (python-mode . python-ts-mode)
+      (elixir-mode . elixir-ts-mode))))
+
+  #+end_src
    
 ** Eglot
 
-   I am using [[https://joaotavora.github.io/eglot/][eglot]], which is built in from [[https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-29#n3273][emacs 29.1]].
+  I am using [[https://joaotavora.github.io/eglot/][eglot]], which is built in from [[https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-29#n3273][emacs 29.1]].
 
-   #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
 
-   (use-package eglot
-     :ensure nil
-     :config (add-to-list 'eglot-server-programs
-                          '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.16.0/language_server.sh"))
-     :config (add-to-list 'eglot-server-programs
-                          '(php-mode . ("intelephense" "--stdio"))))
+  (use-package eglot
+    :ensure nil
+    :config (add-to-list 'eglot-server-programs
+                         '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.17.0/language_server.sh"))
+    :config (add-to-list 'eglot-server-programs
+                         '(php-mode . ("intelephense" "--stdio"))))
 
-   #+end_src
+  #+end_src
    
 ** Bash
 
-   #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
 
-   (use-package
-    sh-mode
-    :ensure nil
-    :mode "\\.sh?\\'"
-    :hook (bash-ts-mode . eglot-ensure))
-   
-   #+end_src   
+  (use-package
+   sh-mode
+   :ensure nil
+   :mode "\\.sh?\\'"
+   :hook (bash-ts-mode . eglot-ensure))
+
+  #+end_src   
    
 ** Elixir
 
-   Trying out tree-sitter with elixir-ts-mode, bye elixir-mode!
+  Trying out tree-sitter with elixir-ts-mode, bye elixir-mode!
 
-   #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
 
-   (use-package
-    elixir-ts-mode
-    :hook (elixir-ts-mode . eglot-ensure)
-    (elixir-ts-mode
-     .
-     (lambda ()
-       (push '(">=" . ?\u2265) prettify-symbols-alist)
-       (push '("<=" . ?\u2264) prettify-symbols-alist)
-       (push '("!=" . ?\u2260) prettify-symbols-alist)
-       (push '("=~" . ?\u2245) prettify-symbols-alist)
-       (push '("<-" . ?\u2190) prettify-symbols-alist)
-       (push '("->" . ?\u2192) prettify-symbols-alist)
-       (push '("<-" . ?\u2190) prettify-symbols-alist)
-       (push '("|>" . ?\u25B7) prettify-symbols-alist)))
-    (before-save . eglot-format))
-   
-   #+end_src   
+  (use-package
+   elixir-ts-mode
+   :hook (elixir-ts-mode . eglot-ensure)
+   (elixir-ts-mode
+    .
+    (lambda ()
+      (push '(">=" . ?\u2265) prettify-symbols-alist)
+      (push '("<=" . ?\u2264) prettify-symbols-alist)
+      (push '("!=" . ?\u2260) prettify-symbols-alist)
+      (push '("=~" . ?\u2245) prettify-symbols-alist)
+      (push '("<-" . ?\u2190) prettify-symbols-alist)
+      (push '("->" . ?\u2192) prettify-symbols-alist)
+      (push '("<-" . ?\u2190) prettify-symbols-alist)
+      (push '("|>" . ?\u25B7) prettify-symbols-alist)))
+   (before-save . eglot-format))
+
+  #+end_src   
 
 ** Erlang
 
-   #+begin_src emacs-lisp
-   (use-package
-     erlang
-     :defer t)
-   #+end_src
-
+  #+begin_src emacs-lisp
+  (use-package
+    erlang
+    :defer t)
+  #+end_src
+   
 ** JavaScript
 
-   #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
+
+  (use-package
+   js2-mode
+   :init
+   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+   :hook (js-ts-mode . eglot-ensure))
+
+  #+end_src
    
-   (use-package
-    js2-mode
-    :init
-    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    :hook (js-ts-mode . eglot-ensure))
-
-   #+end_src
-
 ** Web-mode
 
-   #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
 
-   (use-package
-    web-mode
-    :init
-    (setq
-     web-mode-markup-indent-offset 2
-     web-mode-css-indent-offset 2
-     web-mode-code-indent-offset 2)
-    :config
-    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.eex?\\'" . web-mode)))
-   
-   #+end_src
+  (use-package
+   web-mode
+   :init
+   (setq
+    web-mode-markup-indent-offset 2
+    web-mode-css-indent-offset 2
+    web-mode-code-indent-offset 2)
+   :config
+   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.eex?\\'" . web-mode)))
 
+  #+end_src
+  
 ** Lisp
 
   [[https://paredit.org/][Paredit]] is a must have when editing lisp code.
-
 
   #+begin_src emacs-lisp
 
@@ -1011,71 +1010,82 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
    
 *** Emacs Lisp
 
-   #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
 
-   (use-package
-    elisp-autofmt
-    :commands (elisp-autofmt-mode elisp-autofmt-buffer)
-    :hook (emacs-lisp-mode . elisp-autofmt-mode))
-   
-   #+end_src   
+  (use-package
+   elisp-autofmt
+   :commands (elisp-autofmt-mode elisp-autofmt-buffer)
+   :hook (emacs-lisp-mode . elisp-autofmt-mode))
 
-   In =emacs-lisp-mode= we can enable =eldoc-mode= to display information
-   about a function or a variable in the echo area.
+  #+end_src   
 
-   #+begin_src emacs-lisp
+  In =emacs-lisp-mode= we can enable =eldoc-mode= to display information
+  about a function or a variable in the echo area.
 
-   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-   (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+  #+begin_src emacs-lisp
 
-   #+end_src   
+  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+
+  #+end_src   
 
 *** Common lisp
 
-    #+begin_quote
-    This configuration must be tested, one day I will find a good project in
-    Common Lisp and test it out!
-    #+end_quote
+  #+begin_quote
+  This configuration must be tested, one day I will find a good project in
+  Common Lisp and test it out!
+  #+end_quote
 
-    I use [[http://www.common-lisp.net/project/slime/][Slime]] along with =lisp-mode= to edit Common Lisp code. Slime provides
-    code evaluation and other great features, a must have for a Common Lisp
-    developer. You can install the Common Lisp slime counterpart using
-    [[http://www.quicklisp.org/beta/][Quicklisp]], creating a helper that can be loaded.
+  I use [[http://www.common-lisp.net/project/slime/][Slime]] along with =lisp-mode= to edit Common Lisp code. Slime provides
+  code evaluation and other great features, a must have for a Common Lisp
+  developer. You can install the Common Lisp slime counterpart using
+  [[http://www.quicklisp.org/beta/][Quicklisp]], creating a helper that can be loaded.
 
-    We can specify what Common Lisp program Slime should use (I use SBCL). More
-    sensible =loop= indentation is borrowed from [[https://github.com/simenheg][simenheg]].
+  We can specify what Common Lisp program Slime should use (I use SBCL). More
+  sensible =loop= indentation is borrowed from [[https://github.com/simenheg][simenheg]].
 
-    #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
 
-    ;; Superior Lisp Interaction Mode for Emacs
-    (use-package slime
-      :disabled
-      :defer t
-      :bind (:map slime-repl-mode-map ("C-l" . slime-repl-clear-buffer))
-      :hook (common-lisp-mode . activate-slime-helper)
-      :config
-      (when (file-exists-p "~/.quicklisp/slime-helper.el")
-        (load (expand-file-name "~/.quicklisp/slime-helper.el")))
+  ;; Superior Lisp Interaction Mode for Emacs
+  (use-package slime
+    :disabled
+    :defer t
+    :bind (:map slime-repl-mode-map ("C-l" . slime-repl-clear-buffer))
+    :hook (common-lisp-mode . activate-slime-helper)
+    :config
+    (when (file-exists-p "~/.quicklisp/slime-helper.el")
+      (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
-      (setq inferior-lisp-program "sbcl")
+    (setq inferior-lisp-program "sbcl")
 
-      (setq lisp-loop-forms-indentation   6
-            lisp-simple-loop-indentation  2
-            lisp-loop-keyword-indentation 6))
+    (setq lisp-loop-forms-indentation   6
+          lisp-simple-loop-indentation  2
+          lisp-loop-keyword-indentation 6))
 
-    #+end_src
+  #+end_src
    
 ** PHP
 
-   Yep still using PHP...where's my tree-sitter!?
+  Yep still using PHP...where's my tree-sitter!?
 
-   #+begin_src emacs-lisp
-   (use-package
-    php-mode
-    :mode "\\.php?\\'"
-    :hook (php-mode . eglot-ensure))
+  #+begin_src emacs-lisp
+  (use-package
+   php-mode
+   :mode "\\.php?\\'"
+   :hook (php-mode . eglot-ensure))
 
-   #+end_src
+  #+end_src
+
+** R
+
+  I use R a lot for reporting purposes at work
+
+  #+begin_src emacs-lisp
+  (use-package ess
+    :ensure t
+    :init (require 'ess-site)
+    :mode "\\.R?\\'")
+  #+end_src
    
 * Which key
 
