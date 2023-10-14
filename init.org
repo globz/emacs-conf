@@ -910,7 +910,7 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
   (use-package eglot
     :ensure nil
     :config (add-to-list 'eglot-server-programs
-                         '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.17.0/language_server.sh"))
+                         '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.17.1/language_server.sh"))
     :config (add-to-list 'eglot-server-programs
                          '(php-mode . ("intelephense" "--stdio"))))
 
