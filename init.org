@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2023-10-11
+#+LAST_MODIFIED: 2023-10-22
 
 * About
 
@@ -1003,6 +1003,7 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
     :hook ((slime-repl-mode
             lisp-mode
             emacs-lisp-mode
+            geiser-repl-mode
             lisp-interaction-mode
             scheme-mode) 
            . paredit-mode))
@@ -1028,8 +1029,43 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 
-  #+end_src   
+  #+end_src
 
+*** Scheme
+
+  Geiser is a collection of Emacs major and minor modes that conspire with one or
+  more Scheme interpreters to keep the Lisp Machine Spirit alive. It draws
+  inspiration (and a bit more) from environments such as Common Lisp’s Slime,
+  Factor’s FUEL, Squeak or Emacs itself, and does its best to make Scheme hacking
+  inside Emacs (even more) fun.
+
+
+  #+begin_src emacs-lisp
+
+    (use-package
+     geiser
+     :defer t)
+
+  #+end_src
+
+  Chez Scheme integration with Geiser
+
+  #+begin_src emacs-lisp
+
+  (use-package geiser-chez
+    :after geiser)
+
+  #+end_src
+
+  mit-scheme integration with Geiser for SICP
+
+  #+begin_src emacs-lisp
+
+  (use-package geiser-mit
+    :after geiser)
+
+  #+end_src
+  
 *** Common lisp
 
   #+begin_quote
