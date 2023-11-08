@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2023-10-22
+#+LAST_MODIFIED: 2023-11-07
 
 * About
 
@@ -1005,11 +1005,31 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
             emacs-lisp-mode
             geiser-repl-mode
             lisp-interaction-mode
-            scheme-mode) 
+            scheme-mode
+            racket-mode) 
            . paredit-mode))
 
   #+end_src  
-   
+
+  rainbow-delimiters is a "rainbow parentheses"-like mode which highlights
+  delimiters such as parentheses, brackets or braces according to their depth.
+  Each successive level is highlighted in a different color. This makes it easy
+  to spot matching delimiters, orient yourself in the code, and tell which
+  statements are at a given depth.
+
+  #+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :defer t
+    :hook ((slime-repl-mode
+            lisp-mode
+            emacs-lisp-mode
+            geiser-repl-mode
+            lisp-interaction-mode
+            scheme-mode
+            racket-mode) 
+           . rainbow-delimiters-mode))
+  #+end_src  
+  
 *** Emacs Lisp
 
   #+begin_src emacs-lisp
@@ -1064,6 +1084,19 @@ To tidy up a buffer we define this function borrowed from [[https://github.com/s
   (use-package geiser-mit
     :after geiser)
 
+  #+end_src
+
+  Racket includes a rich set of libraries, covering the full range from web
+  server apps to mathematics and scientific simulation software.
+
+  #+begin_src emacs-lisp
+  (use-package racket-mode
+    :mode "\\.rkt?\\'")
+  #+end_src  
+  
+  #+begin_src emacs-lisp
+  (use-package geiser-racket
+    :after geiser)
   #+end_src
   
 *** Common lisp
