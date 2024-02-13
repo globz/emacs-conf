@@ -1194,7 +1194,7 @@ named arguments:
   (use-package ess
     :ensure t
     :init (require 'ess-site)
-    :mode "\\.R?\\'")
+    :mode ("\\.R?\\'" . R-mode))
   #+end_src
 ** Odin
 
