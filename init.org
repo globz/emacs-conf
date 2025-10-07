@@ -1009,6 +1009,7 @@ named arguments:
    js2-mode
    :init
    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+   (add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
    :hook (js-ts-mode . eglot-ensure))
 
   (add-hook 'js-ts-mode-hook (lambda ()
