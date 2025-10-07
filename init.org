@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2024-02-09
+#+LAST_MODIFIED: 2025-10-07
 
 * About
 
@@ -1010,6 +1010,10 @@ named arguments:
    :init
    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
    :hook (js-ts-mode . eglot-ensure))
+
+  (add-hook 'js-ts-mode-hook (lambda ()
+                              (setq indent-tabs-mode t
+                                    tab-width 2)))
 
   #+end_src
    
