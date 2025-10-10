@@ -5,7 +5,7 @@
 #+LATEX_HEADER: \usepackage{inconsolata}
 #+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+PROPERTY: header-args :tangle yes
-#+LAST_MODIFIED: 2025-10-07
+#+LAST_MODIFIED: 2025-10-10
 
 * About
 
@@ -403,7 +403,6 @@
      (setq dashboard-projects-backend 'project-el
            dashboard-banner-logo-title nil
            dashboard-center-content t
-           dashboard-set-footer nil
            dashboard-page-separator "\n\n\n"
            dashboard-items '((projects . 15)
                              (recents  . 15)
