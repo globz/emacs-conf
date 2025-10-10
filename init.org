@@ -948,7 +948,7 @@ named arguments:
         (use-package eglot
           :ensure nil
           :config (add-to-list 'eglot-server-programs
-                               '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.17.1/language_server.sh"))
+                               '(elixir-ts-mode "~/emacs-grimoire/emacs-deps/language-server/elixir-ls-v0.29.3/language_server.sh"))
           :config (add-to-list 'eglot-server-programs
                                '(php-mode . ("intelephense" "--stdio")))
           :config (add-to-list 'eglot-server-programs
